@@ -1,9 +1,12 @@
 const { src, dest, watch, series, parallel } = require('gulp');// Access gulp via the methods 
-var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+const sass = require('gulp-sass'); 
+sass.compiler = require('node-sass'); // Compile the files
 var concat = require('gulp-concat'); // It is mainly used to concatenate files
 var cleanCSS = require('gulp-clean-css'); // Process CSS files to minimize size.
 var uglify = require('gulp-uglify-es').default; // Minimizes the size of Javascript´ files.
 const htmlmin = require('gulp-htmlmin'); // Minimizes the size of html´ files.
+const image = require('gulp-image');
 
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
@@ -14,6 +17,7 @@ const files = {
     cssPath: 'src/**/*.css',
     jsPath: 'src/**/*.js',
     sassPath: 'src/**/*.scss',
+    imgPath: 'src/**/*.jpg',
 }
 
 // Copy HTML´S files 
@@ -29,7 +33,7 @@ function jsFiles () {
     return src(files.jsPath) // Tells the Gulp task what files to use for the task
     .pipe(concat('main.js')) // Concat all js-files into the main.js
     .pipe(uglify()) // Minimizes the size of Javascript´ files by removing whitespace and commets
-    .pipe(dest('pub/JS-resultatfil')) // Save those files into pub-directory
+    .pipe(dest('pub/js')) // Save those files into pub-directory
     .pipe(browserSync.stream()); // Synchronize files´changes to all browser
     }
 
@@ -38,15 +42,24 @@ function cssFiles () {
     return src(files.cssPath) // Tells the Gulp task what files to use for the task
     .pipe(concat('style.css')) // Concat all js-files into the main.js
     .pipe(cleanCSS()) // Minimizes the size of CSS' files by removing whitespace and commets
-    .pipe(dest('pub/CSS-resultatfil')) // Save those files into pub-subdirectory
+    .pipe(dest('pub/css')) // Save those files into pub-subdirectory
     .pipe(browserSync.stream()); // Synchronize files´changes to all browser
     }
 
 // Concat and compress SASS´ files
 function sassFiles () {
     return src(files.sassPath) // Tells the Gulp task what files to use for the task
-    .pipe(concat('style.scss')) // Concat all js-files into the main.js
-    .pipe(dest('pub/SASS-resultatfil')) // Save those files into pub-directory
+    .pipe(sourcemaps.init()) 
+    .pipe(sass().on('error', sass.logError))
+    .pipe(dest('pub/css')) // Save those files into pub-directory
+    .pipe(browserSync.stream()); // Synchronize files´changes to all browser
+    }
+
+// Concat and compress IMAGES´ files
+function imgFiles () {
+    return src(files.imgPath)
+    .pipe(image())
+    .pipe(dest('pub/'))
     .pipe(browserSync.stream()); // Synchronize files´changes to all browser
     }
 
@@ -58,13 +71,13 @@ function watchTask () {
         }
     });
     // Look after files´changes 
-    watch([files.htmlPath, files.jsPath, files.cssPath, files.sassPath], parallel(htmlFiles, jsFiles, cssFiles, sassFiles)).on("change", reload); 
+    watch([files.htmlPath, files.jsPath, files.cssPath, files.sassPath, files.imgPath], parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles)).on("change", reload); 
     }
 
 
 // Export private tasks
 exports.default = series(
-    parallel(htmlFiles, jsFiles, cssFiles, sassFiles), // Runs all tasks simultaneously
+    parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles), // Runs all tasks simultaneously
     watchTask // Look after changes in the tasks´s files
 );
 

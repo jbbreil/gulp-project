@@ -1,0 +1,66 @@
+//Variables
+
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+$lighten-color: lighten($primary-color, 25%);
+
+$backgrouond: rgb(255, 255, 255);
+$border: solid 2px $lighten-color;
+$shadow: 5px 5px 5px #777777;
+$scale-property:  scale(1.05, 1.05);
+$transition-property: transform .3s ease-out;
+
+
+$textColor: rgb(77, 77, 77);
+
+$color1: rgb(189, 43, 43);
+$color2: rgb(38, 122, 70);
+$color3: rgb(75, 43, 189);
+$color4: rgb(230, 182, 25);
+$color5: rgb(140, 5, 145);
+
+@mixin box { // Mixis är kodblod där du kan lägga i CSS-kod för att återanvända senare
+    background-color: #e4dcdc;
+    border: $border;
+    color: $textColor;
+    text-align: justify;
+    padding: 10px;
+    margin: 10px;
+    -moz-box-shadow: $shadow;
+    -webkit-box-shadow: $shadow;
+    box-shadow: $shadow;
+    min-height: 29em;
+}
+
+@mixin boxes { // Mixis är kodblod där du kan lägga i CSS-kod för att återanvända senare
+    height: 150px !important; 
+    width: 100%;
+}
+
+@mixin transform-scale ($transform: false, $transition: false) {
+    @if $transform {
+        transform: $scale-property;
+        transition: $transition-property;
+    } @else {
+        @extend image-default;
+    }
+}
+
+@mixin image-default {
+    cursor: pointer;
+    background-color: $backgrouond;
+    width: 49%;
+    position:relative;
+    margin:20px;
+    outline: 2px solid $color3;
+    outline-offset : 10px;
+    box-sizing:border-box;
+    text-align:center;
+    overflow:hidden;
+}
+
+@mixin image-transform {
+    width: 100%;
+    @include transform-scale($transform: true);
+    @include transform-scale($transition: true);
+}

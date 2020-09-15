@@ -1,0 +1,95 @@
+@import 'base';
+
+
+body {
+  padding: 0;
+  margin:    0 auto;
+  max-width: 900px;
+  font: 100% $font-stack;
+  line-height: 1.5;
+  color: $primary-color;
+  font-weight: 300;
+  font-variant-caps: petite-caps;
+}
+header,
+main,
+footer {
+  background-color: $backgrouond;
+  padding: 20px;
+}
+a {
+  text-decoration: none;
+  color: $primary-color;
+}
+img:hover {
+  @include image;
+}
+.box {
+  @include box;
+}
+.boxes-style {
+  @include boxes;
+}
+.boxes {
+  display: flex;
+  padding: 30px;
+  min-height: 29em;
+  background-color: $backgrouond;
+}
+.background-color-a {
+  background-color: $color1;
+}
+.background-color-b {
+  background-color: $color2;
+}
+.background-color-c {
+  background-color: $color3;
+}
+.background-color-d {
+  background-color: $color4;
+}
+.background-color-e {
+  background-color: $color5;
+}
+#home-header h1 {
+    color: $color1;
+  }
+#colorScheme-header h1 {
+    color: $color2;
+  }
+#news-header h1 {
+    color: $color3;
+  }
+#contact-header h1 {
+    color: $color4;
+  }
+#about--header h1 {
+    color: $color5;
+  }
+
+// IMAGES CARD
+  .pic-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .pic-card {
+    @include image-default;
+  }
+  .pic-card-box {
+    padding: 20px;
+  }
+
+  // CONTACT 
+  .fa-phone,
+  .fa-envelope {
+    color: $color4;
+  }
+
+  // FOOTER
+
+  span {
+    margin:    0 auto;
+    max-width: 900px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+
