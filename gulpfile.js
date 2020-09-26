@@ -7,9 +7,11 @@ var cleanCSS = require('gulp-clean-css'); // Process CSS files to minimize size.
 var uglify = require('gulp-uglify-es').default; // Minimizes the size of Javascript´ files.
 const htmlmin = require('gulp-htmlmin'); // Minimizes the size of html´ files.
 const image = require('gulp-image');
+var babel = require("gulp-babel");
 
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
+
 
 // Create Files´paths object
 const files = {
@@ -18,6 +20,17 @@ const files = {
     jsPath: 'src/**/*.js',
     sassPath: 'src/**/*.scss',
     imgPath: 'src/**/*.jpg',
+}
+
+// Babel
+function babelTranspile () {
+    return src(files.jsPath)
+    .pipe(sourcemaps.init()) 
+    .pipe(babel())
+    .pipe(concat('main.js'))
+    .pipe(sourcemaps.write('./maps'))
+    .pipe(dest("pub/js"))
+    .pipe(browserSync.stream());
 }
 
 // Copy HTML´S files 
@@ -46,21 +59,22 @@ function cssFiles () {
     .pipe(browserSync.stream()); // Synchronize files´changes to all browser
     }
 
-// Concat and compress SASS´ files
-function sassFiles () {
-    return src(files.sassPath) // Tells the Gulp task what files to use for the task
-    .pipe(sourcemaps.init()) 
-    .pipe(sass().on('error', sass.logError))
-    .pipe(dest('pub/css')) // Save those files into pub-directory
-    .pipe(browserSync.stream()); // Synchronize files´changes to all browser
-    }
-
 // Concat and compress IMAGES´ files
 function imgFiles () {
     return src(files.imgPath)
     .pipe(image())
     .pipe(dest('pub/'))
     .pipe(browserSync.stream()); // Synchronize files´changes to all browser
+    }
+
+    // Concat and compress SASS´ files
+function sassFiles () {
+    return src(files.sassPath) // Tells the Gulp task what files to use for the task
+    .pipe(sourcemaps.init()) 
+    .pipe(sass({outputStyle: 'compressed', indendedSyntax: 'true'}).on('error', sass.logError))
+    .pipe(sourcemaps.write('./maps'))
+    .pipe(dest('pub/css')) // Save those files into pub-directory
+    .pipe(browserSync.stream());
     }
 
 // Watch Task browser reload
@@ -71,13 +85,13 @@ function watchTask () {
         }
     });
     // Look after files´changes 
-    watch([files.htmlPath, files.jsPath, files.cssPath, files.sassPath, files.imgPath], parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles)).on("change", reload); 
+    watch([files.htmlPath, files.jsPath, files.cssPath, files.sassPath, files.imgPath], parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles, babelTranspile)).on("change", reload); 
     }
 
 
 // Export private tasks
 exports.default = series(
-    parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles), // Runs all tasks simultaneously
+    parallel(htmlFiles, jsFiles, cssFiles, sassFiles, imgFiles, babelTranspile), // Runs all tasks simultaneously
     watchTask // Look after changes in the tasks´s files
 );
 

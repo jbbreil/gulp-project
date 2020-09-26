@@ -19,12 +19,11 @@ nav {
     
   }
 
-#active-home,
-#active-home:hover {
+  #active-home,
+  #active-home:hover {
     border-bottom: solid 4px $color1;
   }
-  #active-colorScheme,
-  #active-colorScheme:hover  {
+  #active-colorScheme {
     border-bottom: solid 4px $color2;
   }
   #active-news {
@@ -40,15 +39,15 @@ nav {
   #home-header h1 {
     color: $color1;
   }
-#colorScheme-header h1 {
+  #colorScheme-header h1 {
     color: $color2;
   }
-#news-header h1 {
+  #news-header h1 {
     color: $color3;
   }
-#contact-header h1 {
+  #contact-header h1 {
     color: $color4;
   }
-#about-header h1 {
+  #about-header h1 {
     color: $color5;
   }
